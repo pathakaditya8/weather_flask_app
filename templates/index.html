@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather App</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      transition: background-image 0.8s ease-in-out, background-color 0.8s, color 0.8s;
+      background-color: #87CEEB;
+      /* default fallback */
+    }
+
+    /* Day Mode */
+    body.day {
+      background-image: url('https://images.unsplash.com/photo-1501630834273-4b5604d2ee31?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+    }
+
+    /* Night Mode - Stars shining */
+    body.night {
+      background-image: url('https://images.unsplash.com/photo-1534447677768-be436bb09401?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+      background-color: #0b0d17;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(8px);
+      padding: 2.5rem;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+      max-width: 420px;
+      width: 90%;
+      text-align: center;
+      transition: background 0.5s, box-shadow 0.5s, color 0.5s;
+    }
+
+    body.night .container {
+      background: rgba(20, 22, 35, 0.80);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+      color: #f1f5f9;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      color: #333;
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+      transition: color 0.5s;
+    }
+
+    body.night h1 {
+      color: #f8fafc;
+    }
+
+    form {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    form input {
+      flex: 1;
+      padding: 0.8rem;
+      font-size: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      outline: none;
+      background: rgba(255, 255, 255, 0.9);
+      transition: all 0.2s;
+    }
+
+    body.night form input {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: #475569;
+      color: #fff;
+    }
+
+    body.night form input::placeholder {
+      color: #94a3b8;
+    }
+
+    form select {
+      padding: 0.8rem;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.9);
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    body.night form select {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: #475569;
+      color: #fff;
+    }
+
+    body.night form select option {
+      background: #1e293b;
+      color: #fff;
+    }
+
+    form button {
+      padding: 0.8rem 1.2rem;
+      font-size: 1rem;
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.2s, transform 0.1s;
+    }
+
+    form button:hover {
+      background-color: #2563eb;
+    }
+
+    form button:active {
+      transform: scale(0.98);
+    }
+
+    .card {
+      margin-top: 1rem;
+      background: #f8fafc;
+      padding: 1.8rem;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      transition: background 0.5s, box-shadow 0.5s;
+    }
+
+    body.night .card {
+      background: rgba(30, 41, 59, 0.8);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+      color: #0f172a;
+      font-size: 1.8rem;
+      font-weight: 700;
+      transition: color 0.5s;
+    }
+
+    body.night .card h2 {
+      color: #e2e8f0;
+    }
+
+    .card p {
+      margin: 0.4rem 0;
+      color: #475569;
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: color 0.5s;
+    }
+
+    body.night .card p {
+      color: #94a3b8;
+    }
+
+    .card p strong {
+      color: #1e293b;
+      text-transform: capitalize;
+      font-size: 1.15rem;
+      transition: color 0.5s;
+    }
+
+    body.night .card p strong {
+      color: #cbd5e1;
+    }
+
+    .error {
+      margin-top: 1rem;
+      color: #ef4444;
+      font-weight: 600;
+      background: #fee2e2;
+      padding: 1rem;
+      border-radius: 10px;
+    }
+
+    body.night .error {
+      background: rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+  </style>
+</head>
+
+<body onload="initBackground()">
+  <div class="container">
+    <h1>🌤️ Weather App</h1>
+    <form method="POST">
+      <input type="text" name="city" placeholder="Enter city name..." required />
+      <select name="time_format">
+        <option value="24">24-hour</option>
+        <option value="12">12-hour</option>
+      </select>
+      <button type="submit">Search</button>
+    </form>
+
+    {% if weather %}
+    <div class="card">
+      <h2>{{ weather.city }}, {{ weather.country }}</h2>
+      <p><strong>{{ weather.description }}</strong></p>
+      <p>🌡️ {{ weather.temperature }}°C</p>
+      <p>💧 Humidity: {{ weather.humidity }}%</p>
+      <p>🌬️ Wind: {{ weather.wind_speed }} m/s</p>
+      <p>🌅 Sunrise: {{ weather.sunrise }}</p>
+      <p>🌇 Sunset: {{ weather.sunset }}</p>
+      <p>🕓 Time: {{ weather.current_time }} (UTC{{ weather.timezone }})</p>
+      <p>📅 Date: {{ weather.date }}</p>
+    </div>
+
+    <!-- Hidden values for JavaScript -->
+    <div id="weather-meta" style="display: none;" data-sunrise="{{ weather.sunrise_raw }}"
+      data-sunset="{{ weather.sunset_raw }}" data-timezone="{{ weather.timezone_raw }}">
+    </div>
+    {% elif error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
+  </div>
+
+  <script>
+    function setDayMode() {
+      document.body.classList.remove('night');
+      document.body.classList.add('day');
+    }
+
+    function setNightMode() {
+      document.body.classList.remove('day');
+      document.body.classList.add('night');
+    }
+
+    function initBackground() {
+      const meta = document.getElementById("weather-meta");
+
+      if (meta) {
+        // We have specific city data
+        const sunrise = parseInt(meta.dataset.sunrise);
+        const sunset = parseInt(meta.dataset.sunset);
+
+        const utcNow = Math.floor(Date.now() / 1000);
+
+        // Compare absolute UTC timestamps.
+        // If current time is before sunrise OR after sunset it is night.
+        const isNight = utcNow < sunrise || utcNow >= sunset;
+
+        if (isNight) {
+          setNightMode();
+        } else {
+          setDayMode();
+        }
+      } else {
+        // Default based on browser's local time (no city queried yet)
+        const hour = new Date().getHours();
+        if (hour < 6 || hour >= 18) {
+          setNightMode();
+        } else {
+          setDayMode();
+        }
+      }
+    }
+  </script>
+</body>
+
+</html>
